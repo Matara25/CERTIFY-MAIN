@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Students - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th {
+            border-top: none;
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 8px 20px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .address-text {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .subject-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 2px;
+            display: inline-block;
+        }
+        .btn-sm.generate-certificate-btn {
+            margin-top: 8px;
+            width: 100%;
+        }
+        .progress-bar {
+            transition: width .6s ease;
+            text-align: center;
+            white-space: nowrap;
+            min-width: 2em;
+        }
+        .progress {
+            height: 20px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-users me-2"></i>Registered Students</h4>
+                <a href="/admin" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+            <div class="card-body">
+                <% if (error) { %>
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i><%= error %>
+                    </div>
+                <% } %>
+                
+                <% if (students && students.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Registration Number</th>
+                                    <th>Address</th>
+                                    <th>Subjects</th>
+                                    <th>Completion Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% students.forEach(function(student) { %>
+                                    <tr>
+                                        <td><%= student.name %></td>
+                                        <td><%= student.registrationNumber %></td>
+                                        <td><span class="address-text"><%= student.blockchainAddress %></span></td>
+                                        <td>
+                                            <% if (student.subjects && student.subjects.length > 0) { %>
+                                                <div>
+                                                    <% student.subjects.forEach(function(subject) { %>
+                                                        <span class="badge <%= student.completedUnits && student.completedUnits.includes(subject) ? 'bg-success' : 'bg-secondary' %> me-1 mb-1">
+                                                            <%= subject %>
+                                                            <% if (!student.completedUnits || !student.completedUnits.includes(subject)) { %>
+                                                                <button class="btn btn-sm btn-link text-white p-0 ms-1 complete-unit-btn" 
+                                                                        data-student-id="<%= student._id %>"
+                                                                        data-unit="<%= subject %>">
+                                                                    <i class="fas fa-check"></i>
+                                                                </button>
+                                                            <% } %>
+                                                        </span>
+                                                    <% }); %>
+                                                </div>
+                                            <% } else { %>
+                                                <span class="text-muted">No subjects assigned</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% const completedCount = student.completedUnits ? student.completedUnits.length : 0; %>
+                                            <% const totalCount = student.subjects ? student.subjects.length : 0; %>
+                                            <div class="mb-2">
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-success" role="progressbar" 
+                                                         data-progress="<%= (completedCount / totalCount) * 100 %>"
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="100">
+                                                        <%= completedCount %>/<%= totalCount %> Units
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm <%= completedCount === totalCount && totalCount > 0 ? 'btn-success' : 'btn-secondary' %> generate-certificate-btn" 
+                                                    data-student-id="<%= student._id %>"
+                                                    data-student-name="<%= student.name %>"
+                                                    <%= (completedCount === totalCount && totalCount > 0) ? '' : 'disabled' %>
+                                                    title="<%= completedCount === totalCount && totalCount > 0 ? 'Generate Certificate' : `${completedCount}/${totalCount} units completed` %>">
+                                                <i class="fas fa-certificate me-1"></i> 
+                                                <%= completedCount === totalCount && totalCount > 0 ? 'Generate Certificate' : 'Complete All Units First' %>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="text-center py-5">
+                        <i class="fas fa-user-graduate fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No students registered yet</h5>
+                        <p class="text-muted">Add some students to get started</p>
+                        <a href="/addstudent" class="btn btn-primary">
+                            <i class="fas fa-user-plus me-2"></i>Add New Student
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Certificate Generation Modal -->
+    <div class="modal fade" id="certificateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Generate Certificate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="certificateForm">
+                        <input type="hidden" id="studentId" name="studentId">
+                        <div class="mb-3">
+                            <label for="certificateTitle" class="form-label">Certificate Title</label>
+                            <input type="text" class="form-control" id="certificateTitle" name="certificateTitle" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="generateCertificateBtn">Generate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = new bootstrap.Modal(document.getElementById('certificateModal'));
+        const generateButtons = document.querySelectorAll('.generate-certificate-btn');
+        const certificateForm = document.getElementById('certificateForm');
+        const generateBtn = document.getElementById('generateCertificateBtn');
+        const studentIdInput = document.getElementById('studentId');
+        const certificateTitleInput = document.getElementById('certificateTitle');
+
+        // Handle generate certificate button clicks
+        generateButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const studentId = this.dataset.studentId;
+                const studentName = this.dataset.studentName;
+                studentIdInput.value = studentId;
+                certificateTitleInput.value = `${studentName}'s Completion Certificate`;
+                modal.show();
+            });
+        });
+
+        // Handle certificate generation
+        generateBtn.addEventListener('click', async function() {
+            const studentId = studentIdInput.value;
+            const certificateTitle = certificateTitleInput.value;
+
+            try {
+                const response = await fetch(`/generate-certificate/${studentId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ certificateTitle })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Certificate generated successfully!');
+                    modal.hide();
+                    location.reload();
+                } else {
+                    alert(result.error || 'Failed to generate certificate');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while generating the certificate');
+            }
+        });
+
+        // Handle completing units
+        document.querySelectorAll('.complete-unit-btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                const studentId = this.dataset.studentId;
+                const unit = this.dataset.unit;
+
+                try {
+                    const response = await fetch(`/complete-unit/${studentId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ unit })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert('Unit marked as completed!');
+                        location.reload();
+                    } else {
+                        alert(result.error || 'Failed to mark unit as completed');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while marking the unit as completed');
+                }
+            });
+        });
+
+        // Set progress bar widths based on data attributes
+        document.querySelectorAll('.progress-bar').forEach(progressBar => {
+            const progress = parseFloat(progressBar.dataset.progress) || 0;
+            progressBar.style.width = progress + '%';
+            progressBar.setAttribute('aria-valuenow', progress);
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove Employer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-gray-800">Remove Employer</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/institute/dashboard" class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <a href="/logout" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <% if (message) { %>
+            <div class="mb-4 p-4 rounded-md bg-green-50 text-green-700">
+                <%= message %>
+            </div>
+        <% } %>
+
+        <% if (error) { %>
+            <div class="mb-4 p-4 rounded-md bg-red-50 text-red-700">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <!-- Employers List -->
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900 mb-4">Select Employer to Remove</h2>
+                
+                <% if (employers && employers.length > 0) { %>
+                    <div class="space-y-4">
+                        <% employers.forEach(function(employer) { %>
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <h3 class="text-lg font-medium"><%= employer.name %></h3>
+                                    <p class="text-gray-600">Address: <%= employer.address %></p>
+                                    <p class="text-gray-600">Industry: <%= employer.industry %></p>
+                                </div>
+                                <form action="/institute/employers/remove" method="POST" class="flex items-center">
+                                    <input type="hidden" name="employerAddress" value="<%= employer.address %>">
+                                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                        <i class="fas fa-trash-alt mr-2"></i>Remove
+                                    </button>
+                                </form>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <p class="text-gray-600">No employers found.</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

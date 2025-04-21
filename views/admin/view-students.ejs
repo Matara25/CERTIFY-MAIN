@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Students - Certify</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Top Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-indigo-600">Certify</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <%= user ? user.name : 'Admin' %></span>
+                    <a href="/auth/logout" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-lg h-screen">
+            <div class="p-4">
+                <nav class="space-y-2">
+                    <a href="/admin/dashboard" class="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/admin/subjects" class="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-book"></i>
+                        <span>Subjects</span>
+                    </a>
+                    <a href="/admin/certificates" class="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-certificate"></i>
+                        <span>Certificates</span>
+                    </a>
+                    <a href="/admin/users" class="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                    <a href="/admin/verifications" class="flex items-center space-x-2 p-2 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Verifications</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800">Students</h1>
+                    <div class="space-x-4">
+                        <a href="/admin/dashboard" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                            <i class="fas fa-arrow-left mr-2"></i> Go Back
+                        </a>
+                        <a href="/admin/students/add" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                            <i class="fas fa-plus mr-2"></i> Add Student
+                        </a>
+                    </div>
+                </div>
+                
+                <% if (message) { %>
+                    <div class="bg-<%= message.includes('success') ? 'green' : 'red' %>-100 border border-<%= message.includes('success') ? 'green' : 'red' %>-400 text-<%= message.includes('success') ? 'green' : 'red' %>-700 px-4 py-3 rounded mb-4">
+                        <%= message %>
+                    </div>
+                <% } %>
+                
+                <% if (students && students.length > 0) { %>
+                    <div class="bg-white shadow-md rounded overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Name
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Registration Number
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Email
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Blockchain Address
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Subjects
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <% students.forEach(student => { %>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900"><%= student.name %></div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-indigo-600"><%= student.registrationNumber || 'Not assigned' %></div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500"><%= student.email %></div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500 truncate max-w-xs"><%= student.blockchainAddress %></div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-gray-500">
+                                                <% if (student.subjects && student.subjects.length > 0) { %>
+                                                    <div class="space-y-2">
+                                                        <% student.subjects.forEach(subject => { %>
+                                                            <div class="flex items-center space-x-2">
+                                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                                                    <%= subject.code %>
+                                                                </span>
+                                                                <span class="text-gray-700"><%= subject.name %></span>
+                                                                <span class="text-gray-400 text-xs">
+                                                                    <i class="fas fa-clock mr-1"></i>
+                                                                    <%= subject.credits %> credit hours
+                                                                </span>
+                                                            </div>
+                                                        <% }); %>
+                                                    </div>
+                                                <% } else { %>
+                                                    <span class="text-gray-400 italic">No subjects enrolled</span>
+                                                <% } %>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Active
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="/admin/students/<%= student._id %>" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="/admin/students/<%= student._id %>/delete" class="text-red-600 hover:text-red-900">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="bg-white shadow-md rounded p-6 text-center">
+                        <p class="text-gray-500">No students found. Add your first student to get started.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

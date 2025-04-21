@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Certify</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        .dashboard-container {
+            padding: 20px;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+        .btn-action {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            color: white;
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+            color: white;
+        }
+        .list-group-item {
+            border: none;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        .list-group-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .subject-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 2px;
+            display: inline-block;
+        }
+        .certificate-card {
+            border-left: 4px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/student/dashboard">
+                <i class="fas fa-user-graduate me-2"></i>Student Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/student-ganache/logout">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container dashboard-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-4">
+                <i class="fas fa-user-graduate me-2"></i>Welcome, <%= user.name %>
+            </h1>
+            <a href="/" class="btn btn-action">
+                <i class="fas fa-arrow-left me-2"></i>Go Back
+            </a>
+        </div>
+        
+        <% if (error) { %>
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i><%= error %>
+            </div>
+        <% } %>
+
+        <!-- Student Info -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-id-card me-2"></i>Student Information
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <i class="fas fa-envelope me-2"></i>
+                                <strong>Email:</strong> <%= user.email %>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-id-badge me-2"></i>
+                                <strong>Registration Number:</strong> <%= user.registrationNumber %>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-wallet me-2"></i>
+                                <strong>Blockchain Address:</strong> 
+                                <span class="text-monospace"><%= user.blockchainAddress %></span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-calendar me-2"></i>
+                                <strong>Member Since:</strong> 
+                                <%= new Date(user.createdAt).toLocaleDateString() %>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subjects -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-book me-2"></i>Your Subjects
+                    </div>
+                    <div class="card-body">
+                        <% if (user.subjects && user.subjects.length > 0) { %>
+                            <div class="d-flex flex-wrap">
+                                <% user.subjects.forEach(subject => { %>
+                                    <span class="subject-badge">
+                                        <%= subject %>
+                                        <% if (user.completedUnits && user.completedUnits.includes(subject)) { %>
+                                            <i class="fas fa-check ms-1"></i>
+                                        <% } %>
+                                    </span>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <p class="text-muted">No subjects registered yet.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificates -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-certificate me-2"></i>Your Certificates
+                    </div>
+                    <div class="card-body">
+                        <% if (certificates && certificates.length > 0) { %>
+                            <div class="row">
+                                <% certificates.forEach(cert => { %>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card certificate-card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <i class="fas fa-certificate me-2"></i><%= cert.title %>
+                                                </h5>
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        Issued by: <%= cert.issuedBy.name %>
+                                                    </small>
+                                                </p>
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        Date: <%= new Date(cert.issueDate).toLocaleDateString() %>
+                                                    </small>
+                                                </p>
+                                                <a href="/certificate/<%= cert._id %>" class="btn btn-sm btn-action">
+                                                    <i class="fas fa-eye me-1"></i>View Certificate
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <p class="text-muted">No certificates issued yet.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

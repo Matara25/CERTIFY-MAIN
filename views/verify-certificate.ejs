@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Certificate - Certify</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        .verify-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .verify-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .verify-header h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .verify-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .certificate-details {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        .certificate-detail {
+            margin-bottom: 1rem;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+        }
+        .btn-verify {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+            color: white;
+        }
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        .status-valid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-invalid {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="verify-container">
+            <div class="verify-header">
+                <h1><i class="fas fa-certificate me-2"></i>Certificate Verification</h1>
+                <p>Verify the authenticity of a certificate</p>
+            </div>
+
+            <% if (!certificate) { %>
+                <div class="verify-form">
+                    <form action="/certificates/verify" method="POST">
+                        <div class="mb-3">
+                            <label for="certificateId" class="form-label">
+                                <i class="fas fa-id-card me-2"></i>Certificate ID
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="certificateId" 
+                                   name="certificateId" 
+                                   required 
+                                   placeholder="Enter the certificate ID">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="blockchainHash" class="form-label">
+                                <i class="fas fa-hashtag me-2"></i>Blockchain Hash
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="blockchainHash" 
+                                   name="blockchainHash" 
+                                   required 
+                                   placeholder="Enter the blockchain hash">
+                        </div>
+
+                        <button type="submit" class="btn btn-verify">
+                            <i class="fas fa-check-circle me-2"></i>Verify Certificate
+                        </button>
+                    </form>
+                </div>
+            <% } %>
+
+            <% if (message) { %>
+                <div class="alert alert-<%= success ? 'success' : 'danger' %> mt-4">
+                    <i class="fas fa-<%= success ? 'check-circle' : 'exclamation-circle' %> me-2"></i>
+                    <%= message %>
+                </div>
+            <% } %>
+
+            <% if (certificate) { %>
+                <div class="status-badge <%= success ? 'status-valid' : 'status-invalid' %>">
+                    <i class="fas fa-<%= success ? 'check-circle' : 'times-circle' %> me-2"></i>
+                    <%= success ? 'Valid Certificate' : 'Invalid Certificate' %>
+                </div>
+
+                <div class="certificate-details">
+                    <div class="certificate-detail">
+                        <div class="detail-label">Certificate ID</div>
+                        <div><%= certificate.id %></div>
+                    </div>
+
+                    <div class="certificate-detail">
+                        <div class="detail-label">Title</div>
+                        <div><%= certificate.title %></div>
+                    </div>
+
+                    <% if (certificate.description) { %>
+                        <div class="certificate-detail">
+                            <div class="detail-label">Description</div>
+                            <div><%= certificate.description %></div>
+                        </div>
+                    <% } %>
+
+                    <div class="certificate-detail">
+                        <div class="detail-label">Issued To</div>
+                        <div><%= certificate.issuedTo.name %></div>
+                        <div><small class="text-muted"><%= certificate.issuedTo.email %></small></div>
+                    </div>
+
+                    <div class="certificate-detail">
+                        <div class="detail-label">Issued By</div>
+                        <div><%= certificate.issuedBy.name %></div>
+                        <div><small class="text-muted"><%= certificate.issuedBy.email %></small></div>
+                    </div>
+
+                    <div class="certificate-detail">
+                        <div class="detail-label">Issue Date</div>
+                        <div><%= new Date(certificate.issueDate).toLocaleDateString() %></div>
+                    </div>
+
+                    <% if (certificate.expiryDate) { %>
+                        <div class="certificate-detail">
+                            <div class="detail-label">Expiry Date</div>
+                            <div><%= new Date(certificate.expiryDate).toLocaleDateString() %></div>
+                        </div>
+                    <% } %>
+
+                    <div class="certificate-detail">
+                        <div class="detail-label">Status</div>
+                        <div><%= certificate.status.charAt(0).toUpperCase() + certificate.status.slice(1) %></div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="/certificates/verify" class="btn btn-verify">
+                        <i class="fas fa-search me-2"></i>Verify Another Certificate
+                    </a>
+                </div>
+            <% } %>
+
+            <div class="text-center mt-4">
+                <a href="/" class="text-decoration-none">
+                    <i class="fas fa-home me-1"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Certificate View</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="/css/util.css" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+  </head>
+  <body>
+    <div class="container" style="display: flex; justify-content: center; margin-top: 3%">
+      <% if (error) { %>
+        <div style="text-align: center; padding: 20px;">
+          <h2><%= error %></h2>
+          <a href="/" style="text-decoration: none; color: blue;">Back to Home</a>
+        </div>
+      <% } else { %>
+        <div style="width: 800px; height: 600px; padding: 20px; text-align: center; border: 10px solid #787878;">
+          <div style="width: 750px; height: 550px; padding: 20px; text-align: center; border: 5px solid #787878;">
+            <span style="font-size: 50px; font-weight: bold">Certificate of Completion</span>
+            <br /><br />
+            <span style="font-size: 25px"><i>This is to certify that</i></span>
+            <br /><br />
+            <span style="font-size: 30px"><b><%= certificate.issuedTo.name %></b></span>
+            <br /><br />
+            <span style="font-size: 25px"><i>has completed the course</i></span>
+            <br /><br />
+            <span style="font-size: 30px"><%= certificate.title %></span>
+            <br /><br />
+            <span style="font-size: 20px">Issued by: <%= certificate.issuedBy.name %></span>
+            <br /><br />
+            <span style="font-size: 20px">Issue Date: <%= new Date(certificate.issueDate).toLocaleDateString() %></span>
+            <% if (certificate.expiryDate) { %>
+              <br />
+              <span style="font-size: 20px">Expiry Date: <%= new Date(certificate.expiryDate).toLocaleDateString() %></span>
+            <% } %>
+            <br /><br />
+            <span style="font-size: 15px">Certificate ID: <%= certificate.certificateId %></span>
+            <br />
+            <span style="font-size: 15px">Blockchain Hash: <%= certificate.blockchainHash %></span>
+          </div>
+        </div>
+      <% } %>
+    </div>
+    <div style="margin-left: 10%; margin-top: 20px;">
+      <button onclick="window.print()">Print Certificate</button>
+      <a href="/student/dashboard" style="margin-left: 10px; text-decoration: none;">
+        <button>Back to Dashboard</button>
+      </a>
+    </div>
+  </body>
+</html>

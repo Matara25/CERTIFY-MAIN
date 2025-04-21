@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subjects - Certify</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-6xl mx-auto p-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Subjects</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="subjects-container">
+            <!-- Subjects will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Sample subjects data
+        const subjects = [
+            {
+                "_id": "67fad3fb026355ddc77a21c0",
+                "code": "CS101",
+                "name": "Introduction to Computer Science",
+                "description": "Fundamentals of computer science and programming concepts",
+                "credits": 3,
+                "status": "active",
+                "createdBy": "67fad3fb026355ddc77a21bf",
+                "__v": 0,
+                "createdAt": "2025-04-12T20:58:35.882Z",
+                "updatedAt": "2025-04-12T20:58:35.882Z"
+            },
+            {
+                "_id": "67fad3fb026355ddc77a21c1",
+                "code": "CS102",
+                "name": "Data Structures and Algorithms",
+                "description": "Study of fundamental data structures and algorithms",
+                "credits": 4,
+                "status": "active",
+                "createdBy": "67fad3fb026355ddc77a21bf",
+                "__v": 0,
+                "createdAt": "2025-04-12T20:58:35.883Z",
+                "updatedAt": "2025-04-12T20:58:35.883Z"
+            },
+            {
+                "_id": "67fad3fb026355ddc77a21c2",
+                "code": "CS201",
+                "name": "Database Systems",
+                "description": "Introduction to database design and management",
+                "credits": 3,
+                "status": "active",
+                "createdBy": "67fad3fb026355ddc77a21bf",
+                "__v": 0,
+                "createdAt": "2025-04-12T20:58:35.884Z",
+                "updatedAt": "2025-04-12T20:58:35.884Z"
+            },
+            {
+                "_id": "67fad3fb026355ddc77a21c3",
+                "code": "CS202",
+                "name": "Web Development",
+                "description": "Modern web development technologies and practices",
+                "credits": 3,
+                "status": "active",
+                "createdBy": "67fad3fb026355ddc77a21bf",
+                "__v": 0,
+                "createdAt": "2025-04-12T20:58:35.884Z",
+                "updatedAt": "2025-04-12T20:58:35.884Z"
+            },
+            {
+                "_id": "67fad3fb026355ddc77a21c4",
+                "code": "CS301",
+                "name": "Software Engineering",
+                "description": "Software development methodologies and practices",
+                "credits": 4,
+                "status": "active",
+                "createdBy": "67fad3fb026355ddc77a21bf",
+                "__v": 0,
+                "createdAt": "2025-04-12T20:58:35.884Z",
+                "updatedAt": "2025-04-12T20:58:35.884Z"
+            },
+            {
+                "_id": "67fad3fb026355ddc77a21c5",
+                "code": "CS302",
+                "name": "Artificial Intelligence",
+                "description": "Introduction to AI concepts and machine learning",
+                "credits": 4,
+                "status": "active",
+                "createdBy": "67fad3fb026355ddc77a21bf",
+                "__v": 0,
+                "createdAt": "2025-04-12T20:58:35.884Z",
+                "updatedAt": "2025-04-12T20:58:35.884Z"
+            },
+            {
+                "_id": "67fad3fb026355ddc77a21c6",
+                "code": "CS401",
+                "name": "Blockchain Technology",
+                "description": "Fundamentals of blockchain and cryptocurrency",
+                "credits": 3,
+                "status": "active",
+                "createdBy": "67fad3fb026355ddc77a21bf",
+                "__v": 0,
+                "createdAt": "2025-04-12T20:58:35.885Z",
+                "updatedAt": "2025-04-12T20:58:35.885Z"
+            }
+        ];
+
+        // Function to render subjects
+        function renderSubjects() {
+            const container = document.getElementById('subjects-container');
+            
+            if (subjects.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white shadow-md rounded p-6 text-center col-span-3">
+                        <p class="text-gray-500">No subjects found. Add your first subject to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = subjects.map(subject => `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                                ${subject.code}
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                <i class="fas fa-clock mr-1"></i>
+                                ${subject.credits} credit hours
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">${subject.name}</h3>
+                        <p class="text-gray-600 mb-4">${subject.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                ${subject.status}
+                            </span>
+                            <div class="space-x-2">
+                                <a href="#" class="text-indigo-600 hover:text-indigo-900">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="#" class="text-red-600 hover:text-red-900">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render subjects when page loads
+        document.addEventListener('DOMContentLoaded', renderSubjects);
+    </script>
+</body>
+</html> 
