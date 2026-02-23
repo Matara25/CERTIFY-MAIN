@@ -54,4 +54,4 @@ Here is a run through of how to set up the application:
 <img src="https://github.com/Mridul20/Certify/blob/2f46b7640ecb35f50aedad38e6b1bb1e65710116/Screenshot/institute%20dashboard.jpg" alt=""  width="700" height="400" />
 
 ## Author
- **[Mridul Mittal.](https://github.com/Mridul20)**
+ Matara25
